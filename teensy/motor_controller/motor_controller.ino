@@ -1,6 +1,6 @@
 //The required includes for the motor controller
 #include "Encoder.h" //This library includes the encoder class, such that you can obtain the number of ticks counted so far.
-#include <MsTimer2.h>  //This library allows for timer interrupts
+#include "MsTimer2.h"  //This library allows for timer interrupts
 #include <ros.h>  //This includes the ROS overlay
 #include "PID.h"  //This includes the PID class you will be using
 
