@@ -5,5 +5,5 @@
 // the function returns a correct throttle values based on the PID values
 float PID::update(float current)
 {
-	return 42.0 // add your PID implementation here
+	return 42.0; // add your PID implementation here
 }

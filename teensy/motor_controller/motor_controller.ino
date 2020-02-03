@@ -19,7 +19,7 @@
 #define STBYB 37
 
 //TODO: Should students obtain these constants themselves?
-#define update_rate 20  //in ms. Hence actual rate (Hz) = 1 / (update_rate / 1000). So, for 20 ms => 50 Hz
+#define UPATE_RATE 20  //in ms. Hence actual rate (Hz) = 1 / (update_rate / 1000). So, for 20 ms => 50 Hz
 #define per_rot 1200.0  // number of ticks per full wheel rotation
 #define wheel_cir 0.18  //you might have to fine tune this for your vehicle
 #define report_count 10
@@ -38,15 +38,15 @@ float vel_right = 0;
 long last_time = millis();
 
 //The nodehandle as you saw in the ROS intro documentation
-ros::NodeHandle nodeHandle;
-nodeHandle.initNode();
+ros::NodeHandle node_handle;
+
 
 //add your publisher/subscribe objects here
 
 
 void setup() {
   
-  
+  node_handle.initNode();
   pinMode(APHASE, OUTPUT);
   pinMode(PWMA, OUTPUT);
   pinMode(BPHASE, OUTPUT);
@@ -59,7 +59,7 @@ void setup() {
   analogWriteResolution(12);
   
   Serial.begin(9600);
-  MsTimer2::set(vel_time,timed_update_callback); 
+  MsTimer2::set(UPATE_RATE, timed_update_callback); 
   MsTimer2::start();
 
   //You can do some initialization below here in this function.
@@ -77,6 +77,6 @@ void timed_update_callback(){
 
 //Handles communication with the SerialNode on the Jetson. Don't touch this function.
 void loop() {
-  nh.spinOnce();
+  node_handle.spinOnce();
   delay(1);
 }
