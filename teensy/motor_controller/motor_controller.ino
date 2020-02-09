@@ -23,7 +23,7 @@
 //These defines define some constants
 #define UPATE_RATE 20  //in ms. Hence actual rate (Hz) = 1 / (update_rate / 1000). So, for 20 ms => 50 Hz
 #define per_rot 1200.0  // number of ticks per full wheel rotation
-#define wheel_cir 0.18  //you might have to fine tune this for your vehicle
+#define wheel_cir 0.18   // The wheel circumference in meters. You might have to fine tune this for your vehicle  
 #define report_count 10
 
 //The PID controller for the left and right wheel
