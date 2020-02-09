@@ -19,6 +19,7 @@ add_message_files(
   FILES
   DummyMessage.msg
   Order.msg
+  Vel.msg
 )
 
 ## Generate services in the 'srv' folder

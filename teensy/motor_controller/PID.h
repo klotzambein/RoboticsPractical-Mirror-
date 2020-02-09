@@ -8,7 +8,7 @@ class PID
 	float d_kP;
 	float d_kI;
 	float d_kD;
-	float d_preVal;
+	float d_prevError;
 	float d_integral;
 
 public:

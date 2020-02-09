@@ -1,0 +1,7 @@
+<launch> 
+  <arg name="robot" default = "alice"/>
+
+  <include file="$(find keyboard_teleop)/launch/keyboard_$(arg robot).launch"/>
+  
+
+</launch>
