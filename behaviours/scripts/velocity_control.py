@@ -12,7 +12,7 @@ from datetime import timedelta
 
 publisher = rospy.Publisher('PID_vel', Vel, queue_size=1)
 
-track = 0.108  #distance between 
+track = 0.108  #distance between the wheels
 ser = serial.Serial('/dev/ttyACM0', 9600)
 
 #### **************  Put your tuned PID values here ************************************** 
