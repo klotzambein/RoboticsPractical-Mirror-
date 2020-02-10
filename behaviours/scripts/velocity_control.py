@@ -11,9 +11,8 @@ from timeloop import Timeloop
 from datetime import timedelta
 
 publisher = rospy.Publisher('PID_vel', Vel, queue_size=1)
-
+wheel_radius = 0.03 #meters
 track = 0.108  #distance between the wheels
-ser = serial.Serial('/dev/ttyACM0', 9600)
 
 #### **************  Put your tuned PID values here ************************************** 
 cur_config = {}
@@ -26,9 +25,9 @@ cur_config['rotational'] = 0
 
 
 #### **************  You only have to the following function ************************************** 
-# return the left and right wheel velocities in m/s based on the provided
+# return the left and right wheel velocities in rads/s based on the provided
 # body velocities. Where translational is the forward speed in m/s and
-# rotational the rotational speed around the z axis in radians.
+# rotational the rotational speed around the z axis in rads/s.
 def determine_wheel_command(translational, rotational):
     #left_wheel_vel = ...
     #right_wheel_vel = ...

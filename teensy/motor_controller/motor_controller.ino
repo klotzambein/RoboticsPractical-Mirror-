@@ -126,8 +126,8 @@ void timed_update_callback(){
   // - left_pos: the previous encoder value for left
   // - right_pos: the previous encoder value for right
   
-  // vel_left = ... calculate the wheel velocity for the left wheel here in m/s. 
-  // vel_right = ... calculate the wheel velocity for the right wheel here in m/s.
+  // vel_left = ... calculate the wheel velocity for the left wheel here in rads/s.
+  // vel_right = ... calculate the wheel velocity for the right wheel here in rads/s.
 
 
   //The following lines pass the calculated wheel velocities to the PID controller, and updates the motor commands
