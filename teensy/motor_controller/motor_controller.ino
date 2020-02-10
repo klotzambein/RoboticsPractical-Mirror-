@@ -117,7 +117,6 @@ void timed_update_callback(){
   // At the top of this file, the following constants are declared. (line 25 and 26)
   // You can use these constants for you calculations below
   // #define per_rot 1200.0  // number of ticks per full wheel rotation
-  // #define wheel_cir 0.18  // The wheel circumference in meters. You might have to fine tune this for your vehicle  
 
   // When calculating the difference between the current and previous encoder state, 
   // you can use the following variables:
