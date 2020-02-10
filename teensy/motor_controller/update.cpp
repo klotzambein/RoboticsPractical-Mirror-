@@ -1,5 +1,4 @@
 #include "PID.h"
-#include <algorithm>
 
 //Implement the pid update function, such that given the current speed
 // the function returns a correct throttle values based on the PID values

@@ -3,7 +3,7 @@
 #include "MsTimer2.h"  //This library allows for timer interrupts
 #include <ros.h>  //This includes the ROS overlay
 #include "my_msgs/Vel.h"
-#include <std_msgs/Float64.msg>
+#include <std_msgs/Float64.h>
 #include "PID.h"  //This includes the PID class you will be using
 
 
