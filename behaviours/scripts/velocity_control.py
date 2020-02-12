@@ -8,13 +8,13 @@ from geometry_msgs.msg import Twist
 
 publisher = rospy.Publisher('PID_vel', Vel, queue_size=1)
 wheel_radius = 0.03 #meters
-track = 0.108  #distance between the wheels
+track = 0.105  #distance between the wheels
 
 #### **************  Put your tuned PID values here ************************************** 
 cur_config = {}
-cur_config['k_P'] = 5   #put your tuned PID values here
-cur_config['k_I'] = 500   #put your tuned PID values here
-cur_config['k_D'] = 0.01   #put your tuned PID values here
+cur_config['k_P'] = 0   #put your tuned PID values here
+cur_config['k_I'] = 0   #put your tuned PID values here
+cur_config['k_D'] = 0   #put your tuned PID values here
 cur_config['translational'] = 0
 cur_config['rotational'] = 0
 
