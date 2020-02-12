@@ -1,14 +1,10 @@
 #!/usr/bin/env python3
 
-import serial
-import struct
 import rospy
 from dynamic_reconfigure.server import Server
 from teensy.cfg import senderConfig
 from my_msgs.msg import Vel
 from geometry_msgs.msg import Twist
-from timeloop import Timeloop
-from datetime import timedelta
 
 publisher = rospy.Publisher('PID_vel', Vel, queue_size=1)
 wheel_radius = 0.03 #meters
@@ -16,9 +12,9 @@ track = 0.108  #distance between the wheels
 
 #### **************  Put your tuned PID values here ************************************** 
 cur_config = {}
-cur_config['k_P'] = 0   #put your tuned PID values here
-cur_config['k_I'] = 0   #put your tuned PID values here
-cur_config['k_D'] = 0   #put your tuned PID values here
+cur_config['k_P'] = 5   #put your tuned PID values here
+cur_config['k_I'] = 500   #put your tuned PID values here
+cur_config['k_D'] = 0.01   #put your tuned PID values here
 cur_config['translational'] = 0
 cur_config['rotational'] = 0
 
@@ -29,8 +25,8 @@ cur_config['rotational'] = 0
 # body velocities. Where translational is the forward speed in m/s and
 # rotational the rotational speed around the z axis in rads/s.
 def determine_wheel_command(translational, rotational):
-    #left_wheel_vel = ...
-    #right_wheel_vel = ...
+    left_wheel_vel = 10
+    right_wheel_vel = 5
 
     return left_wheel_vel, right_wheel_vel
 
@@ -59,6 +55,7 @@ def send(vel_left, vel_right):
     msg.kD = cur_config['k_D']
     msg.left_vel = vel_left
     msg.right_vel = vel_right
+    print("publishing")
     publisher.publish(msg)
 
 #Update velocities when new ones are received and send them to the teensy
@@ -69,28 +66,42 @@ def callback(data):
     send(vel_left, vel_right)
     
 
-tl = Timeloop()
+# tl = Timeloop()
 
 #Resend the last configuration every 0.45s, if this does not happen the teensy will stop driving
 # out of self preservation.
-@tl.job(interval=timedelta(seconds=0.45))
-def timed_callback():
+# @tl.job(interval=timedelta(seconds=0.45))
+
+
+def timed_callback(event):
+    print("timed callback")
     vel_left, vel_right = determine_wheel_command(cur_config['translational'], cur_config['rotational'])
     send(vel_left, vel_right)
-   
+
 rospy.init_node('Teensy_communicator', anonymous=True)
+print("starting timer")
+rospy.Timer(rospy.Duration(0.45), timed_callback)
+print("passed timed callback")
+
 
 rospy.Subscriber("cmd_vel", Twist, callback)
 srv = Server(senderConfig, config_callback)
 
-#If this program is stopped it will stop the teensy from driving
-import atexit
-@atexit.register
+
 def stop():
+    print("Called stop")
     msg = Twist()
     callback(msg)
 
-tl.start(block = True)
+# tl.start(block = True)
+rospy.on_shutdown(stop)
 
 rospy.spin()
+
+
+#If this program is stopped it will stop the teensy from driving
+# import atexit
+# @atexit.register
+
+
 
