@@ -4,6 +4,9 @@
 #include <ros.h>  //This includes the ROS overlay
 #include "my_msgs/Vel.h"
 #include <std_msgs/Float64.h>
+#include <geometry_msgs/Twist.h>
+#include <geometry_msgs/Pose2D.h>
+
 #include "PID.h"  //This includes the PID class you will be using
 
 
@@ -44,23 +47,89 @@ long last_time = millis();
 
 // The nodehandle as you saw in the ROS intro documentation
 ros::NodeHandle node_handle;
+
+
+//This defines an enumeration. You can define your states here for Finite State Machine behaviour of your update loop.
+enum State
+{
+  DUMMY_STATE, //you can remove this state, it's just an example on how to add elements in an enumeration
+};
+
+State state = State::DUMMY_STATE;  //This is an example on how to set the current state to one of the values from the enumeration.
+// For comparison, you can use the following:
+// switch(state)
+// {
+//    case State::DUMMY_STATE:
+//      do_stuff();
+//      break;
+//    case other state.... etc.
+
+// }
+
+//or:
+
+// if (state == State::DUMMY_STATE)
+// {
+//   do_stuff()
+// } else if (state == ....) etc.
+
+// ************* Publishers ***************************
 // These publishers are provided to make visualisation prossible for tuning your PID controllers.
 std_msgs::Float64 wheel_msg;
 ros::Publisher left_wheel_publisher("left_vel", &wheel_msg);
 ros::Publisher right_wheel_publisher("right_vel", &wheel_msg); 
 
-// Update PID settings and target velocities. 
-// This callback receives the target wheel velocities you send from the Jetson in Python.
-void pid_vel_cb(const my_msgs::Vel& msg)
-{
-  PID_left.set_terms(msg.kP,msg.kI,msg.kD);
-  PID_right.set_terms(msg.kP,msg.kI,msg.kD);
-  PID_left.set_target(msg.left_vel);
-  PID_right.set_target(msg.right_vel);
-  last_time = millis();
-}
-ros::Subscriber<my_msgs::Vel> pid_sub("PID_vel", &pid_vel_cb);
 
+
+
+// *********** Subscriber callback functions *****************************
+
+//These callbacks receive PID values, and updates the PID controller with these new values;
+void P_cb(std_msgs::Float32 const &msg){PID_left.P(msg.data);PID_right.P(msg.data);}
+void I_cb(std_msgs::Float32 const &msg){PID_left.I(msg.data);PID_right.I(msg.data);}
+void D_cb(std_msgs::Float32 const &msg){PID_left.D(msg.data);PID_right.D(msg.data);}
+
+
+// Set the left and right wheel velocities in rads/s based on the provided
+// body velocities. Where translational is the forward speed in m/s and
+// rotational the rotational speed around the z axis in rads/s.
+void setTargetVelocity(double translational, double rotational)
+{
+    double left_wheel_vel = 0;   //put your wheel velocity calculations here (was previously in python)
+    double right_wheel_vel = 0;   //put your wheel velocity calculations here (was previously in python)
+
+    PID_left.set_target(left_wheel_vel);
+    PID_right.set_target(right_wheel_vel);
+}
+
+// This callback receives robot target velocities from outside the Teensy.
+void cmd_vel_cb(geometry_msgs::Twist const &msg)
+{
+   
+    double translational = msg.linear.x;
+    double rotational = msg.angular.z;
+    setTargetVelocity(translational, rotational);
+    
+}
+
+
+
+void pos_cmd_cb(geometry_msgs::Pose2D const &msg)
+{
+  // msg contains the target location for position control
+  // msg contains:
+  // msg.x
+  // msg.y
+  // msg.theta
+}
+
+// *************** The subscribers *************************
+
+ros::Subscriber<geometry_msgs::Pose2D> pose_sub("pos_cmd", pos_cmd_cb);
+ros::Subscriber<geometry_msgs::Twist> cmd_vel_sub("cmd_vel", cmd_vel_cb);
+ros::Subscriber<std_msgs::Float32> pid_p_sub("PID/P", P_cb);
+ros::Subscriber<std_msgs::Float32> pid_i_sub("PID/I", I_cb);
+ros::Subscriber<std_msgs::Float32> pid_d_sub("PID/D", D_cb);
 //add your publisher/subscriber objects here
 
 
@@ -72,6 +141,11 @@ void setup() {
   node_handle.subscribe(pid_sub);
   node_handle.advertise(left_wheel_publisher);
   node_handle.advertise(right_wheel_publisher);
+  node_handle.subscribe(cmd_vel_sub);
+  node_handle.subscribe(pose_sub);
+  node_handle.subscribe(pid_p_sub);
+  node_handle.subscribe(pid_i_sub);
+  node_handle.subscribe(pid_d_sub);
 
   //This part sets the hardware I/O configuration
   pinMode(APHASE, OUTPUT);
