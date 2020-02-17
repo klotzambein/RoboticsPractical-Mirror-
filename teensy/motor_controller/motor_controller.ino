@@ -110,7 +110,7 @@ void cmd_vel_cb(geometry_msgs::Twist const &msg)
     double translational = msg.linear.x;
     double rotational = msg.angular.z;
     setTargetVelocity(translational, rotational);
-    
+    last_time = millis();
 }
 
 
