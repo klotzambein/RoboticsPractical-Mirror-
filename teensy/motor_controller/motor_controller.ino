@@ -4,6 +4,7 @@
 #include <ros.h>  //This includes the ROS overlay
 #include "my_msgs/Vel.h"
 #include <std_msgs/Float64.h>
+#include <std_msgs/Float32.h>
 #include <geometry_msgs/Twist.h>
 #include <geometry_msgs/Pose2D.h>
 
@@ -121,6 +122,30 @@ void pos_cmd_cb(geometry_msgs::Pose2D const &msg)
   // msg.x
   // msg.y
   // msg.theta
+
+  //The received message contains coordinates of the target location in the robot frame of reference.
+  //The mathematics behind position control, uses the robot position within the target-location frame of reference though.
+  //The following mapping will map the coordinates from the robot frame of reference to the latter frame of reference:
+
+  //express the target location in polar coordinates:
+  double distance = sqrt(msg.x * msg.x + msg.y * msg.y);
+  double angle = atan2(msg.y, msg.x);
+
+  //Now map to the other frame of reference in polar coordinates:
+  angle += 3.14;
+  // and add the rotation theta to this frame of reference:
+  // The robot angle within the target frame of reference:
+
+  double theta = msg.theta * -1;
+  // Rotate the new frame of reference with this angle:
+  angle += theta;
+
+  //So now the robot coordinates in the target frame of reference is:
+  double x = distance * cos(angle);
+  double y = distance * sin(angle);
+  // and theta is the angle of the robot in the target frame of reference.
+  // Use these coordinates for position control calculations
+
 }
 
 // *************** The subscribers *************************
@@ -138,7 +163,6 @@ ros::Subscriber<std_msgs::Float32> pid_d_sub("PID/D", D_cb);
 void setup() {
   //This part initializes the ROS node, and tells ROS about the declared publishers and subscribers.
   node_handle.initNode();
-  node_handle.subscribe(pid_sub);
   node_handle.advertise(left_wheel_publisher);
   node_handle.advertise(right_wheel_publisher);
   node_handle.subscribe(cmd_vel_sub);
