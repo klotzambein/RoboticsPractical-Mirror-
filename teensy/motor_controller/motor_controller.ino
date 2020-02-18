@@ -79,7 +79,8 @@ State state = State::DUMMY_STATE;  //This is an example on how to set the curren
 std_msgs::Float64 wheel_msg;
 ros::Publisher left_wheel_publisher("left_vel", &wheel_msg);
 ros::Publisher right_wheel_publisher("right_vel", &wheel_msg); 
-
+ros::Publisher left_wheel_target_publisher("left_target_vel", &wheel_msg);
+ros::Publisher right_wheel_target_publisher("right_target_vel", &wheel_msg); 
 
 
 
@@ -98,7 +99,10 @@ void setTargetVelocity(double translational, double rotational)
 {
     double left_wheel_vel = 0;   //put your wheel velocity calculations here (was previously in python)
     double right_wheel_vel = 0;   //put your wheel velocity calculations here (was previously in python)
-
+    wheel_msg.data = left_wheel_vel;
+    left_wheel_target_publisher.publish(&wheel_msg);
+    wheel_msg.data = right_wheel_vel;
+    right_wheel_target_publisher.publish(&wheel_msg);
     PID_left.set_target(left_wheel_vel);
     PID_right.set_target(right_wheel_vel);
 }
@@ -165,6 +169,8 @@ void setup() {
   node_handle.initNode();
   node_handle.advertise(left_wheel_publisher);
   node_handle.advertise(right_wheel_publisher);
+  node_handle.advertise(left_wheel_target_publisher);
+  node_handle.advertise(right_wheel_target_publisher);
   node_handle.subscribe(cmd_vel_sub);
   node_handle.subscribe(pose_sub);
   node_handle.subscribe(pid_p_sub);
