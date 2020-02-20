@@ -4,6 +4,7 @@
 #include <string>
 #include <sensor_msgs/Image.h>
 #include <std_msgs/Header.h>
+#include <image_transport/image_transport.h>
 
 static std::string gstreamer_pipeline (const size_t capture_width, const size_t capture_height, const size_t framerate, const int flip_method) {
     return "nvarguscamerasrc ! video/x-raw(memory:NVMM), width=(int)" + std::to_string(capture_width) + ", height=(int)" +
@@ -12,23 +13,20 @@ static std::string gstreamer_pipeline (const size_t capture_width, const size_t 
            std::to_string(capture_height) + ", format=(string)BGRx ! videoconvert ! video/x-raw, format=(string)BGR ! appsink";
 }
 
-
-
-
 class CaptureDevice {
 
 	const size_t capture_width_;
 	const size_t capture_height_;
 	const size_t framerate_;
 	const size_t flip_method_;
-
+	
 	cv::VideoCapture capture_device_;
 
 	public:
 		CaptureDevice(const size_t capture_width, 
-								  const size_t capture_height,
-									const size_t framerate, 
-									const int flip_method) :
+					  const size_t capture_height,
+					  const size_t framerate, 
+					  const int flip_method) :
  				capture_width_(capture_width), 
 				capture_height_(capture_height),
 				framerate_(framerate),
@@ -42,9 +40,9 @@ class CaptureDevice {
 
 		bool init() {
 			std::string pipeline = gstreamer_pipeline(capture_width_,
-																								capture_height_,
-																								framerate_,
-																								flip_method_);
+												      capture_height_,
+													  framerate_,
+													  flip_method_);
 	
 			capture_device_ = cv::VideoCapture(pipeline, cv::CAP_GSTREAMER);
 
@@ -75,19 +73,21 @@ int main(int argc, char **argv) {
 	ros::init(argc, argv, "camera_node");
 	ros::NodeHandle nh;	
 
-	ros::Publisher camera_image_publisher;
-	camera_image_publisher = nh.advertise<sensor_msgs::Image>("camera/image", 1);
+    image_transport::ImageTransport it(nh);
+    image_transport::Publisher camera_image_publisher = it.advertise("/camera/image", 1);
+    
+	//ros::Publisher camera_image_publisher;
+	//camera_image_publisher = nh.advertise<sensor_msgs::Image>("camera/image", 1);
 	
-	// Make rosparam of this, or just leave it hardcoded?
 	const size_t capture_width = 3840;
 	const size_t capture_height = 2160;
 	const size_t framerate = 10;
 	const int flip_method = 0;
 
 	std::string pipeline = gstreamer_pipeline(capture_width,
-																						capture_height,
-																						framerate,
-																						flip_method);
+											  capture_height,
+											  framerate,
+											  flip_method);
 	
 	CaptureDevice capture_device(capture_width, capture_height, framerate, flip_method);
 

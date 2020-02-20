@@ -10,8 +10,9 @@ add_compile_options(-std=c++11)
 find_package(catkin REQUIRED COMPONENTS
   cv_bridge
   roscpp
-	std_msgs
-	message_generation
+  std_msgs
+  message_generation
+  image_transport
 )
 
 find_package(OpenCV REQUIRED)
