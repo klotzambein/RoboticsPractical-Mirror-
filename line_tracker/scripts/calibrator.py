@@ -20,9 +20,11 @@ class Calibrator(object):
 
 
         self.rospack = rospkg.RosPack()
+        self.image_converter = ImageConverter()
+
         self.gui = Tk()
         self.gui.title("Calibrator")
-        self.cv_bridge = CvBridge()
+        #self.cv_bridge = CvBridge()
         
         self.window = Frame(self.gui, width = 400, height = 500).pack()
         
@@ -68,9 +70,9 @@ class Calibrator(object):
         
         
     def update_loop(self):
-        #image_msg = rospy.wait_for_message("/NAO/image", Image)
-        #image = self.cv_bridge.imgmsg_to_cv2(image_msg)
-        image = cv2.imread("tweety.png")
+        image_msg = rospy.wait_for_message("/camera/image", Image)
+        image = self.converter.convert_to_opencv(image_msg)  
+        #image = cv2.imread("tweety.png")   ## If you want to play with this calibrator tool, without using images from your robot, you can uncomment this line, and comment the 2 lines above. Then you can segment Tweety :)
         image = self.filter_image(image)
         cv2.imshow("Image", image)
         cv2.waitKey(1)

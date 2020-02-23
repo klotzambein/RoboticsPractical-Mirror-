@@ -1,7 +1,8 @@
 import rospy  ## The ROS library for python
 import cv2    ## The OpenCV library for python
 import numpy as np  ## Numpy 
-from utils import preprocess_image ## Import the preprocess function as implemented in utils.py
+from image_converter import ImageConverter  ## import a class that can transform ros image messages to opencv images, and back
+from utils import * ## Import the preprocess function as implemented in utils.py
 from geometry_msgs.msg import Twist ## The message definition for sending target velocities for the robot. 
                                     ## See http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html
                                     ## Use linear.x as forward velocity
@@ -12,6 +13,8 @@ from geometry_msgs.msg import Twist ## The message definition for sending target
 class LineTracker:
 
     def __init__(self): ## the constructor
+
+        self.image_converter = ImageConverter()
         ## initialize the PID parameters
         #self.p = ..
         #self.i = ..
@@ -25,10 +28,22 @@ class LineTracker:
         #self.v_min = ..
         #self.v_max = ..
 
-    def update(self):
-        ## - obtain a new image from the camera
-        ## - preprocess the image
-        ## - use hsv filtering
+        ## for the last part at object construction, make a image subscriber.
+        self.image_subscriber = rospy.Subscriber("/camera/image", Image, self.update, queue_size = 1)
+
+
+    def update(self, image_msg):
+        ## - Transform a ROS image to a numpy / opencv image:
+        img = converter.convert_to_opencv(image_msg)  
+
+        ## - preprocess the image (see utils.py)
+        prepocessed_image = preprocess_image(img)
+        
+        ## - use hsv filtering to obtain a binary image
+        filtered_image = #.....  (Hint: Take a look at the implementation of the calibrator tool.)
+
+        ## - Post process the binary image (see utils.py)
+        postprocessed_image = postprocess_image(filtered_image)
         ## - determin the error for the PID controller
         ## - send a "cmd_vel" message, containing the robot target velocities
 
@@ -42,10 +57,7 @@ if __name__ == "__main__":
     rospy.init_node("line_tracker_node")
 
     linetracker = LineTracker() ## add more constructor arguments if needed
-    rate = rospy.Rate(20)  ## This sets the update frequency to 20 Hz, you can adjust this if you want to.
-    while not rospy.is_shutdown():  ## While the program shouldn't stop:
-        linetracker.update()        ## update the linetracker
-        rate.sleep()                ## wait until the next iteration should start, according to the earlier defined update frequency
+    rospy.spin()  ## prevent the program from shutting down
 
 
 
