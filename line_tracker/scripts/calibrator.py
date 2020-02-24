@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 ## Originally written by Anton Mulder
 ## Modified by Rik Timmers and Marc Groefsema
 import rospy
 import cv2
 import yaml
-from Tkinter import Tk, Button, Scale, HORIZONTAL, Frame, Label, Text, END
+from tkinter import Tk, Button, Scale, HORIZONTAL, Frame, Label, Text, END
 from sensor_msgs.msg import Image
 from image_converter import ImageConverter
 import numpy as np
@@ -63,7 +63,7 @@ class Calibrator(object):
         
     def update_loop(self):
         image_msg = rospy.wait_for_message("/camera/image", Image) ## The Jetson can not show images, so this should always run on the PC
-        image = self.converter.convert_to_opencv(image_msg)  
+        image = self.image_converter.convert_to_opencv(image_msg)  
         #image = cv2.imread("tweety.png")   ## If you want to play with this calibrator tool, without using images from your robot, you can uncomment this line, and comment the 2 lines above. Then you can segment Tweety :)
         image = self.filter_image(image)
         cv2.imshow("Image", image)

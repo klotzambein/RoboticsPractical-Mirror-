@@ -2,6 +2,7 @@ import rospy  ## The ROS library for python
 import cv2    ## The OpenCV library for python
 import numpy as np  ## Numpy 
 from image_converter import ImageConverter  ## import a class that can transform ros image messages to opencv images, and back
+from sensor_msgs.msg import Image
 from utils import * ## Import the preprocess function as implemented in utils.py
 from geometry_msgs.msg import Twist ## The message definition for sending target velocities for the robot. 
                                     ## See http://docs.ros.org/melodic/api/geometry_msgs/html/msg/Twist.html
@@ -36,7 +37,7 @@ class LineTracker:
 
     def update(self, image_msg):
         ## - Transform a ROS image to a numpy / opencv image:
-        img = converter.convert_to_opencv(image_msg)  
+        img = self.image_converter.convert_to_opencv(image_msg)  
 
         ## - preprocess the image (see utils.py)
         prepocessed_image = preprocess_image(img)
