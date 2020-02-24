@@ -28,8 +28,10 @@ class LineTracker:
         #self.v_min = ..
         #self.v_max = ..
 
-        ## for the last part at object construction, make a image subscriber.
-        self.image_subscriber = rospy.Subscriber("/camera/image", Image, self.update, queue_size = 1)
+        ## for the last part at object construction, make a image subscribe.
+        topic_name = "/camera/image" ## For when working on the Jetson
+        #topic_name = "/camera/uncompressed" ## For debugging on the PC
+        self.image_subscriber = rospy.Subscriber(topic_name, Image, self.update, queue_size = 1)
 
 
     def update(self, image_msg):
