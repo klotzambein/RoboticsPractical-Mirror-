@@ -7,7 +7,7 @@ import cv2
 import yaml
 from Tkinter import Tk, Button, Scale, HORIZONTAL, Frame, Label, Text, END
 from sensor_msgs.msg import Image
-from cv_bridge import CvBridge
+from image_converter import ImageConverter
 import numpy as np
 import os
 from std_srvs.srv import Empty, SetBool
@@ -17,18 +17,15 @@ from utils import preprocess_image
 class Calibrator(object):
     
     def __init__(self):
-
-
         self.rospack = rospkg.RosPack()
         self.image_converter = ImageConverter()
 
         self.gui = Tk()
         self.gui.title("Calibrator")
-        #self.cv_bridge = CvBridge()
         
         self.window = Frame(self.gui, width = 400, height = 500).pack()
         
-        slider_length = 200;
+        slider_length = 200
         
         self.h_lower_scale = Scale(self.gui, length = slider_length, from_ = 0, to_ = 180, orient = HORIZONTAL)
         self.h_lower_scale.place(x = 100, y = 10)
@@ -57,11 +54,6 @@ class Calibrator(object):
         self.v_upper_scale.set(255)
         self.v_upper_label = Label(self.gui, text = "V upper value").place(x = 10, y = 310)
                
-     
-        
-
-        
-        
         self.close_button = Button(self.gui, text = "Quit", command = self.gui.quit)
         self.close_button.place(x = 180, y = 450)
                 
@@ -70,7 +62,7 @@ class Calibrator(object):
         
         
     def update_loop(self):
-        image_msg = rospy.wait_for_message("/camera/image", Image)
+        image_msg = rospy.wait_for_message("/camera/image", Image) ## The Jetson can not show images, so this should always run on the PC
         image = self.converter.convert_to_opencv(image_msg)  
         #image = cv2.imread("tweety.png")   ## If you want to play with this calibrator tool, without using images from your robot, you can uncomment this line, and comment the 2 lines above. Then you can segment Tweety :)
         image = self.filter_image(image)
