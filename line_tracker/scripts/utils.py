@@ -5,12 +5,13 @@ import numpy as np
 ## Do your image preprocessing here, such that both your line-tracker and the hsv-calibrator tool can use the same preprocessing function
 ## As preprocessing step, this function should implement a gaussian blur.    <----------------
 def preprocess_image(image):
-
-    return image  ## Return the preprocessed image here
+    return cv2.GaussianBlur(image, (11, 11), 10)  ## Return the preprocessed image here
 
 
 ## This function receives the hsv-filtered image
 ## Do your image postprocessing here, by first applying a few erosion steps to remove noise pixels, and then applying a few dilation steps. <------------
 def postprocess_image(image):
-
-    return image  ## Return the preprocessed image here
+    kernel = np.ones((5,5), np.uint8)
+    erosion = cv2.erode(img, kernel, iterations = 3)
+    dilation = cv2.dilate(erosion, kernel,iterations = 3)
+    return dilation  ## Return the preprocessed image here

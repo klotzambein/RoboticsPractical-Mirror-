@@ -1,3 +1,4 @@
+import os
 import rospy  ## The ROS library for python
 import cv2    ## The OpenCV library for python
 import numpy as np  ## Numpy 
@@ -30,9 +31,11 @@ class LineTracker:
         #self.v_max = ..
 
         ## for the last part at object construction, make a image subscribe.
-        topic_name = "/camera/image" ## For when working on the Jetson
-        #topic_name = "/camera/uncompressed" ## For debugging on the PC
-        self.image_subscriber = rospy.Subscriber(topic_name, Image, self.update, queue_size = 1)
+        if "nano-sudo" in os.uname()[1]:
+            self.topic_name = "/camera/image" ## For when working on the Jetson
+        else:
+            self.topic_name = "/camera/uncompressed" ## For debugging on the PC
+        self.image_subscriber = rospy.Subscriber(self.topic_name, Image, self.update, queue_size = 1)
 
 
     def update(self, image_msg):
