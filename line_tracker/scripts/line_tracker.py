@@ -81,7 +81,7 @@ class LineTracker:
  
 
         msg = Twist()
-        msg.linear.x = 0.3
+        msg.linear.x = 0.14
         msg.angular.z = -rotation
 
         print(msg)
