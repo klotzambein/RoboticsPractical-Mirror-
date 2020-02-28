@@ -11,5 +11,11 @@
 // (See PID.h for the formal difinitions)
 float PID::update(float current)
 {
-	return 42.0; // add your PID implementation here
+	float error = d_target - current;
+	float p = error;
+	float i = d_integral + error;
+	float d = error - d_prevError;
+	d_prevError = error;
+	d_integral = i;
+	return d_kP * p + d_kI * i + d_kD * d;
 }

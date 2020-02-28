@@ -12,6 +12,6 @@ def preprocess_image(image):
 ## Do your image postprocessing here, by first applying a few erosion steps to remove noise pixels, and then applying a few dilation steps. <------------
 def postprocess_image(image):
     kernel = np.ones((5,5), np.uint8)
-    erosion = cv2.erode(img, kernel, iterations = 3)
+    erosion = cv2.erode(image, kernel, iterations = 3)
     dilation = cv2.dilate(erosion, kernel,iterations = 3)
     return dilation  ## Return the preprocessed image here
