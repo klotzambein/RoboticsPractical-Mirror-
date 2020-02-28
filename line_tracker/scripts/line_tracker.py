@@ -22,7 +22,7 @@ class LineTracker:
         self.image_converter = ImageConverter()
         ## initialize the PID parameters
         self.p = 0.1
-        self.i = 0.008
+        self.i = 0.006
         self.d = 0.001
         self.prevError = 0
         self.integral = 0
