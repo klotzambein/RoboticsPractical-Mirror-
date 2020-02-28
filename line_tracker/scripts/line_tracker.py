@@ -68,11 +68,17 @@ class LineTracker:
 
         normalize_img = postprocessed_image / 255
         count_column_img = np.count_nonzero(normalize_img, axis=0)
-        multiplier = np.linspace(-1.0, 1.0, num=count_column_img.size)
+        sum_count_img = np.sum(count_column_img)
 
-        error = np.mean(count_column_img * multiplier)
+        if (sum_count_img < 300):
+            rotation = 0
+        else:
+            multiplier = np.linspace(-1.0, 1.0, num=count_column_img.size)
 
-        rotation = self.pid_update(error)
+            error = np.mean(count_column_img * multiplier)
+
+            rotation = self.pid_update(error)
+ 
 
         msg = Twist()
         msg.linear.x = 0.1
