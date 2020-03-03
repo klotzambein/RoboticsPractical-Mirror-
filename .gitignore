@@ -1,4 +1,9 @@
 *.o
 *.d
 *.pyc
+*.h
+*.npy
+*.jpg
+*.png
+
 build
