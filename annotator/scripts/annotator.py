@@ -36,6 +36,21 @@ def extract_bounding_boxes(hsv_image):
 
     return bounding_boxes
 
+## This function receives the image as obtained from the camera topic.
+## Do your image preprocessing here, such that both your line-tracker and the hsv-calibrator tool can use the same preprocessing function
+## As preprocessing step, this function should implement a gaussian blur.    <----------------
+def preprocess_image(image):
+    return cv2.GaussianBlur(image, (11, 11), 4)  ## Return the preprocessed image here
+
+
+## This function receives the hsv-filtered image
+## Do your image postprocessing here, by first applying a few erosion steps to remove noise pixels, and then applying a few dilation steps. <------------
+def postprocess_image(image):
+    kernel = np.ones((2,2), np.uint8)
+    erosion = cv2.erode(image, kernel, iterations = 2)
+    dilation = cv2.dilate(erosion, kernel,iterations = 2)
+    return dilation  ## Return the preprocessed image here
+
 # Need to give the name of dataset to load for annotating
 if len(sys.argv) != 2:
     print("Give name of dataset without .npy")
@@ -61,20 +76,19 @@ for image in data:
     
     # Use your preprocessing, you might need to create a separate function for it   
     # @TODO
-    preprocessed_image = ... 
+    preprocessed_image = preprocess_image(original_image) 
 
     # Use the calibrator to get the values for the filter
-    low_filter = np.array([0, 0, 0]) # @TODO Fill these in 
-    high_filter = np.array([255, 255, 255]) # @TODO Fill these in
+    low_filter = np.array([105, 50, 40]) # @TODO Fill these in 
+    high_filter = np.array([160, 255, 255]) # @TODO Fill these in
 
-    # Convert preprocessed_image to hsv     
-    image = preprocess_image(image)
+    # Convert preprocessed_image to hsv
     hsv_image = cv2.cvtColor(preprocessed_image, cv2.COLOR_BGR2HSV)
     hsv_image = cv2.inRange(hsv_image, low_filter, high_filter)
 
     # Perform the postprocessing, you might need to create a separate function for it
     # @TODO
-    postprocessed_image = ... 
+    postprocessed_image = postprocess_image(hsv_image)
 
     bounding_boxes = extract_bounding_boxes(postprocessed_image)
 
