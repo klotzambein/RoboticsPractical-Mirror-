@@ -55,6 +55,7 @@ def postprocess_image(image):
     return dilation  ## Return the preprocessed image here
 
 def update(image):
+    global turning
     original_image = image_converter.convert_to_opencv(image)
 
     # Use your preprocessing, you might need to create a separate function for it   
