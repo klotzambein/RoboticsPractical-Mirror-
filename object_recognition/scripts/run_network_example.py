@@ -89,7 +89,7 @@ def update(image):
         predictions = model.predict(input_data)
         for bb, p in zip(bounding_boxes, predictions):
             index = np.where(p == np.amax(p))[0][0] + 1  # argmax
-            if index == 3:
+            if index == 3 or p[index - 1] < 0.9:
                 continue
 
             print("[", datetime.datetime.now(), "] ", index, "-", bb, "-", p[index -1])
