@@ -127,8 +127,8 @@ if "nano-sudo" in os.uname()[1]:
 else:
     topic_name = "/camera/uncompressed" ## For debugging on the PC
 
-#image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
+image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
 
-while True:
-    print("wait for message loop")
-    update(rospy.wait_for_message("/camera/image", Image))
+# while True:
+#     print("wait for message loop")
+#     update(rospy.wait_for_message("/camera/image", Image))
