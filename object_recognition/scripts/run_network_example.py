@@ -103,6 +103,7 @@ def update(image):
                     publisher.publish(msg)
                     print("Left")
                     turning = True
+                    break
                 elif index == 2:
                     # Publish Pose2D go right
                     msg = Pose2D()
@@ -113,6 +114,7 @@ def update(image):
                     print("Right")
 
                     turning = True
+                    break
     print("end update")
 
 def state_update(char_msg):
