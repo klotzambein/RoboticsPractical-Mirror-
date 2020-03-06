@@ -86,7 +86,7 @@ def update(image):
 
         predictions = model.predict(input_data)
         for bb, p in zip(bounding_boxes, predictions):
-            index = np.where(p == np.amax(p))[0][0] + 1
+            index = np.where(p >= 0.8)[0][0] + 1
             if index != 3:
                 print("[", datetime.datetime.now(), "] ", index, " - ", bb)
             if not turning and bb[1] > 96:
@@ -111,8 +111,9 @@ def update(image):
                     turning = True
 
 def state_update(char_msg):
-    print("state: " char_msg)
-    if char_msg.data == 'v':
+    global turning
+    print("state: ", char_msg, ", ", chr(char_msg.data), ", ", chr(char_msg.data) == 'v')
+    if chr(char_msg.data) == 'v':
         turning = False
 
 state_subscriber = rospy.Subscriber("state", Char, state_update, queue_size = 1)
