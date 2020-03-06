@@ -130,4 +130,4 @@ else:
 #image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
 
 while True:
-    update(rospy.wait_for_message(topic_name, Image))
+    update(rospy.wait_for_message("/camera/image", Image))
