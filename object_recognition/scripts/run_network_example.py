@@ -22,7 +22,7 @@ model = load_model(model_path)
 image_converter = ImageConverter()
 rospy.init_node("run_network_example")
 
-publisher = rospy.Publisher('target_point', Pose2D, queue_size=1)
+publisher = rospy.Publisher('pos_cmd', Pose2D, queue_size=1)
 
 turning = False
 
