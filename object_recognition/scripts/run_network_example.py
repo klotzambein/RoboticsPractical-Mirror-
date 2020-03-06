@@ -55,6 +55,7 @@ def postprocess_image(image):
     return dilation  ## Return the preprocessed image here
 
 def update(image):
+    print("start update")
     global turning
 
     original_image = image_converter.convert_to_opencv(image)
@@ -87,7 +88,9 @@ def update(image):
 
         predictions = model.predict(input_data)
         for bb, p in zip(bounding_boxes, predictions):
-            index = np.where(p == np.amax(p))[0][0] + 1
+            indwhile True:
+#     print("wait for message loop")
+#     update(rospy.wait_for_message("/camera/image", Image))ex = np.where(p == np.amax(p))[0][0] + 1
             if index == 3:
                 continue
 
@@ -112,6 +115,7 @@ def update(image):
                     print("Right")
 
                     turning = True
+    print("end update")
 
 def state_update(char_msg):
     global turning
