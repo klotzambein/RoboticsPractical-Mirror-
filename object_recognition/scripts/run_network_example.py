@@ -56,6 +56,7 @@ def postprocess_image(image):
 
 def update(image):
     global turning
+
     original_image = image_converter.convert_to_opencv(image)
 
     # Use your preprocessing, you might need to create a separate function for it   
@@ -87,7 +88,7 @@ def update(image):
         predictions = model.predict(input_data)
         for bb, p in zip(bounding_boxes, predictions):
             index = np.where(p == np.amax(p))[0][0] + 1
-            if index == 3 or p[index -1] < 0.8:
+            if index == 3:
                 continue
 
             print("[", datetime.datetime.now(), "] ", index, "-", bb, "-", p[index -1])
@@ -125,6 +126,8 @@ if "nano-sudo" in os.uname()[1]:
     topic_name = "/camera/image" ## For when working on the Jetson
 else:
     topic_name = "/camera/uncompressed" ## For debugging on the PC
-image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
 
-rospy.spin()
+#image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
+
+while True:
+    update(rospy.wait_for_message(topic_name, Image))
