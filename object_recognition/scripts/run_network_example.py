@@ -24,7 +24,7 @@ rospy.init_node("run_network_example")
 
 publisher = rospy.Publisher('target_point', Pose2D, queue_size=1)
 
-turning = false
+turning = False
 
 # Extract the bounding boxes, using a filtered HSV image
 def extract_bounding_boxes(hsv_image):
@@ -97,7 +97,7 @@ def update(image):
                     msg.theta = 1.57
                     publisher.publish(msg)
 
-                    turning = true
+                    turning = True
                 elif index == 2:
                     # Publish Pose2D go right
                     msg = Pose2D()
@@ -106,11 +106,11 @@ def update(image):
                     msg.theta = -1.57
                     publisher.publish(msg)
 
-                    turning = true
+                    turning = True
 
 def state_update(char_msg):
     if char_msg.data == 'v':
-        turning = false
+        turning = False
 
 state_subscriber = rospy.Subscriber("state", Char, state_update, queue_size = 1)
 
