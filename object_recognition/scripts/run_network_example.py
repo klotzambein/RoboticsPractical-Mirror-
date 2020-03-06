@@ -88,9 +88,7 @@ def update(image):
 
         predictions = model.predict(input_data)
         for bb, p in zip(bounding_boxes, predictions):
-            indwhile True:
-#     print("wait for message loop")
-#     update(rospy.wait_for_message("/camera/image", Image))ex = np.where(p == np.amax(p))[0][0] + 1
+            index = np.where(p == np.amax(p))[0][0] + 1
             if index == 3:
                 continue
 
