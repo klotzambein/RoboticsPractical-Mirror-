@@ -89,8 +89,6 @@ class LineTracker:
         publisher.publish(msg)
 
 
-        pass
-
     def pid_update(self, error):
         p = error
         i = self.integral + error

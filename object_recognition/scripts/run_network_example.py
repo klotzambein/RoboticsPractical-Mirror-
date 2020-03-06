@@ -5,6 +5,7 @@ from tensorflow.keras.models import load_model
 import rospy  ## The ROS library for python
 from image_converter import ImageConverter  ## import a class that can transform ros image messages to opencv images, and back
 from sensor_msgs.msg import Image
+from geometry_msgs.msg import Pose2D
 import datetime
 
 
@@ -20,6 +21,7 @@ model = load_model(model_path)
 image_converter = ImageConverter()
 rospy.init_node("run_network_example")
 
+publisher = rospy.Publisher('target_point', Pose2D, queue_size=1)
 
 # Extract the bounding boxes, using a filtered HSV image
 def extract_bounding_boxes(hsv_image):
@@ -79,11 +81,34 @@ def update(image):
         input_data = np.array(input_data)
 
         predictions = model.predict(input_data)
-        for p in predictions:
+        for bb, p in zip(bounding_boxes, predictions):
             index = np.where(p == np.amax(p))[0][0] + 1
             if index != 3:
-                print("[", datetime.datetime.now(), "] ", index)
+                print("[", datetime.datetime.now(), "] ", index, " - ", bb)
+            if index == 1 and bb[1] > 96:
+                # Publish Pose2D go left
+                msg = Pose2D()
+                msg.x = 0.2
+                msg.y = 0.2
+                msg.theta = 1.57
+                publisher.publish(msg)
 
-image_subscriber = rospy.Subscriber("/camera/uncompressed", Image, update, queue_size = 1)
+                # inhibit reacting to new signs
+            else if index == 2 and bb[1] > 96:
+                # Publish Pose2D go right
+                msg = Pose2D()
+                msg.x = 0.2
+                msg.y = -0.2
+                msg.theta = -1.57
+                publisher.publish(msg)
+
+                # inhibit reacting to new signs
+
+
+if "nano-sudo" in os.uname()[1]:
+    topic_name = "/camera/image" ## For when working on the Jetson
+else:
+    topic_name = "/camera/uncompressed" ## For debugging on the PC
+image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
 
 rospy.spin()
