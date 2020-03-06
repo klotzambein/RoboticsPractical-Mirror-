@@ -111,6 +111,7 @@ def update(image):
                     turning = True
 
 def state_update(char_msg):
+    print("state: " char_msg)
     if char_msg.data == 'v':
         turning = False
 
