@@ -98,7 +98,7 @@ def update(image):
                     publisher.publish(msg)
 
                     turning = true
-                else if index == 2:
+                elif index == 2:
                     # Publish Pose2D go right
                     msg = Pose2D()
                     msg.x = 0.2
