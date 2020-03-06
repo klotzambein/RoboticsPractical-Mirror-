@@ -90,7 +90,7 @@ def update(image):
             if index == 3:
                 continue
 
-            print("[", datetime.datetime.now(), "] ", index, " - ", bb)
+            print("[", datetime.datetime.now(), "] ", index, "-", bb, "-", p[index -1])
             if not turning and bb[1] > 96:
                 if index == 1:
                     # Publish Pose2D go left
