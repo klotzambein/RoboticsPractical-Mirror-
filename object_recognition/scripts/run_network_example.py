@@ -88,6 +88,7 @@ def update(image):
         for bb, p in zip(bounding_boxes, predictions):
             index = np.where(p == np.amax(p))[0][0] + 1
             if index == 3 or p[index] < 0.7:
+                print(index, " - ", p[index])
                 continue
             print("[", datetime.datetime.now(), "] ", index, " - ", bb)
             if not turning and bb[1] > 96:
