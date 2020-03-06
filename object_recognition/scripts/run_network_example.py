@@ -55,7 +55,7 @@ def postprocess_image(image):
     return dilation  ## Return the preprocessed image here
 
 def update(image):
-    print("start update")
+    # print("start update")
     global turning
 
     original_image = image_converter.convert_to_opencv(image)
@@ -88,7 +88,7 @@ def update(image):
 
         predictions = model.predict(input_data)
         for bb, p in zip(bounding_boxes, predictions):
-            index = np.where(p == np.amax(p))[0][0] + 1
+            index = np.where(p == np.amax(p))[0][0] + 1  # argmax
             if index == 3:
                 continue
 
@@ -115,7 +115,7 @@ def update(image):
 
                     turning = True
                     break
-    print("end update")
+    # print("end update")
 
 def state_update(char_msg):
     global turning
