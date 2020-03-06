@@ -97,7 +97,7 @@ def update(image):
                     msg.y = 0.2
                     msg.theta = 1.57
                     publisher.publish(msg)
-
+                    print("Left")
                     turning = True
                 elif index == 2:
                     # Publish Pose2D go right
@@ -106,6 +106,7 @@ def update(image):
                     msg.y = -0.2
                     msg.theta = -1.57
                     publisher.publish(msg)
+                    print("Right")
 
                     turning = True
 
