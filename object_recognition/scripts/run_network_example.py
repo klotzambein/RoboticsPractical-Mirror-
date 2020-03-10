@@ -126,7 +126,7 @@ def state_update(char_msg):
     if chr(char_msg.data) == 'v':
         turning = False
 
-#state_subscriber = rospy.Subscriber("state", Char, state_update, queue_size = 1)
+state_subscriber = rospy.Subscriber("state", Char, state_update, queue_size = 1)
 
 
 if "nano-sudo" in os.uname()[1]:
@@ -134,10 +134,10 @@ if "nano-sudo" in os.uname()[1]:
 else:
     topic_name = "/camera/uncompressed" ## For debugging on the PC
 
-#image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
-#rospy.spin()
+image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
+rospy.spin()
 
-while True:
-    print("wait for message loop")
-    update(rospy.wait_for_message("/camera/image", Image))
-    rospy.sleep(0.5)
+#while True:
+#    print("wait for message loop")
+#    update(rospy.wait_for_message("/camera/image", Image))
+#    rospy.sleep(0.5)
