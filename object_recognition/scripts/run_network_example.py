@@ -62,6 +62,7 @@ def update(image):
 
     original_image = image_converter.convert_to_opencv(image)
 
+    original_image[0:95,:] = 0
     # Use your preprocessing, you might need to create a separate function for it   
     preprocessed_image = preprocess_image(original_image) 
 
@@ -82,42 +83,48 @@ def update(image):
     for bb in bounding_boxes:
         img = original_image[bb[1]: bb[3], bb[0] : bb[2]]
         img = cv2.resize(img, (32, 32))
-        data = np.asarray(img, dtype=np.float32) / 255.0
-        input_data.append(data)
+        input_data.append(img)
+ 
+    input_data = np.asarray(input_data, dtype=np.float32) / 255.0
 
-    if len(input_data) > 0:
-        input_data = np.array(input_data)
+    if input_data.shape[0] > 0:
 
         predictions = model.predict(input_data)
-        for bb, p in zip(bounding_boxes, predictions):
-            index = np.where(p == np.amax(p))[0][0] + 1  # argmax
-            if index == 3 or p[index - 1] < 0.9:
-                continue
 
-            print("[", datetime.datetime.now(), "] ", index, "-", bb, "-", p[index -1])
-            if not turning and bb[1] > 96:
-                if index == 1:
-                    # Publish Pose2D go left
-                    msg = Pose2D()
-                    msg.x = 0.2
-                    msg.y = 0.2
-                    msg.theta = 1.57
-                    publisher.publish(msg)
-                    print("Left")
-                    turning = True
-                    break
-                elif index == 2:
-                    # Publish Pose2D go right
-                    msg = Pose2D()
-                    msg.x = 0.2
-                    msg.y = -0.2
-                    msg.theta = -1.57
-                    publisher.publish(msg)
-                    print("Right")
+        maxed_pred = np.argmax(predictions)
+        index = maxed_pred % 3 + 1
 
-                    turning = True
-                    break
-    print(turning)
+        
+
+
+        # for bb, p in zip(bounding_boxes, predictions):
+        #     index = np.where(p == np.amax(p))[0][0] + 1  # argmax
+        #     if index == 3 or p[index - 1] < 0.9:
+        #         continue
+
+        # print("[", datetime.datetime.now(), "] ", index, "-", bb, "-", p[index -1])
+        if not turning:
+            if index == 1:
+                # Publish Pose2D go left
+                msg = Pose2D()
+                msg.x = 0.2
+                msg.y = 0.2
+                msg.theta = 1.57
+                publisher.publish(msg)
+                print("Left")
+                turning = True
+                return
+            elif index == 2:
+                # Publish Pose2D go right
+                msg = Pose2D()
+                msg.x = 0.2
+                msg.y = -0.2
+                msg.theta = -1.57
+                publisher.publish(msg)
+                print("Right")
+
+                turning = True
+                return
 
 def state_update(char_msg):
     global turning
