@@ -126,7 +126,7 @@ def state_update(char_msg):
     if chr(char_msg.data) == 'v':
         turning = False
 
-state_subscriber = rospy.Subscriber("state", Char, state_update, queue_size = 1)
+#state_subscriber = rospy.Subscriber("state", Char, state_update, queue_size = 1)
 
 
 if "nano-sudo" in os.uname()[1]:
