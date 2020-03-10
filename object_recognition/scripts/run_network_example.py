@@ -58,7 +58,8 @@ def update(image):
     # print("start update")
     global turning
 
-    print(image.header.stamp)
+    print(image)
+    print(image.header)
 
     original_image = image_converter.convert_to_opencv(image)
 
