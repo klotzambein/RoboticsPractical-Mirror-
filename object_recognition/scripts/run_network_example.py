@@ -146,7 +146,8 @@ while True:
             msg = rospy.wait_for_message("/camera/image", Image, 0.01)
             has_msg = True
             print("got image")
-    except: 
+    except:
+        pass
     finally:
         if has_msg:
             update(msg)
