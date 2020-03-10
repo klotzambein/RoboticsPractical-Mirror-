@@ -58,6 +58,8 @@ def update(image):
     # print("start update")
     global turning
 
+    print(image.header.stamp)
+
     original_image = image_converter.convert_to_opencv(image)
 
     # Use your preprocessing, you might need to create a separate function for it   
