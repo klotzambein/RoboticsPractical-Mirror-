@@ -58,7 +58,6 @@ def update(image):
     # print("start update")
     global turning
 
-    time = rospy.get_time()
     print(image.header.seq)
 
     original_image = image_converter.convert_to_opencv(image)
@@ -118,7 +117,7 @@ def update(image):
 
                     turning = True
                     break
-    print(rospy.get_time() - time)
+    print(turning)
 
 def state_update(char_msg):
     global turning
@@ -134,20 +133,10 @@ if "nano-sudo" in os.uname()[1]:
 else:
     topic_name = "/camera/uncompressed" ## For debugging on the PC
 
-# image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
-# rospy.spin()
+#image_subscriber = rospy.Subscriber(topic_name, Image, update, queue_size = 1)
+#rospy.spin()
 
 while True:
     print("wait for message loop")
-    msg = Image()
-    has_msg = False
-    try:
-        for i in range(100):
-            msg = rospy.wait_for_message("/camera/image", Image, 0.1)
-            has_msg = True
-            print("got image")
-    except:
-        pass
-    finally:
-        if has_msg:
-            update(msg)
+    update(rospy.wait_for_message("/camera/image", Image))
+    rospy.sleep(0.2)
