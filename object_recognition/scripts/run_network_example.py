@@ -117,12 +117,11 @@ def update(image):
 
                     turning = True
                     break
-    # print("end update")
+    print(turning)
 
 def state_update(char_msg):
     global turning
-    print("state: ", ch
-    print(image)ar_msg, ", ", chr(char_msg.data), ", ", chr(char_msg.data) == 'v')
+    print("state: ", char_msg, ", ", chr(char_msg.data), ", ", chr(char_msg.data) == 'v')
     if chr(char_msg.data) == 'v':
         turning = False
 
