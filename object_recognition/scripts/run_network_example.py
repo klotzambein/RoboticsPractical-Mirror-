@@ -58,7 +58,7 @@ def update(image):
     # print("start update")
     global turning
 
-    time = rospy.get_rostime()
+    time = rospy.get_time()
     print(image.header.seq)
 
     original_image = image_converter.convert_to_opencv(image)
@@ -118,7 +118,7 @@ def update(image):
 
                     turning = True
                     break
-    print(rospy.get_rostime() - time)
+    print(rospy.get_time() - time)
 
 def state_update(char_msg):
     global turning
