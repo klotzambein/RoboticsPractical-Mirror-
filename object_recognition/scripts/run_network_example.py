@@ -140,4 +140,4 @@ else:
 while True:
     print("wait for message loop")
     update(rospy.wait_for_message("/camera/image", Image))
-    rospy.sleep(0.2)
+    rospy.sleep(0.5)
