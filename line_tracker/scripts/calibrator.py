@@ -62,9 +62,9 @@ class Calibrator(object):
         
         
     def update_loop(self):
-        image_msg = rospy.wait_for_message("/camera/uncompressed", Image) ## The Jetson can not show images, so this should always run on the PC
-        image = self.image_converter.convert_to_opencv(image_msg)  
-        #image = cv2.imread("tweety.png")   ## If you want to play with this calibrator tool, without using images from your robot, you can uncomment this line, and comment the 2 lines above. Then you can segment Tweety :)
+        #image_msg = rospy.wait_for_message("/camera/uncompressed", Image) ## The Jetson can not show images, so this should always run on the PC
+        #image = self.image_converter.convert_to_opencv(image_msg)  
+        image = cv2.imread("tweety.png")   ## If you want to play with this calibrator tool, without using images from your robot, you can uncomment this line, and comment the 2 lines above. Then you can segment Tweety :)
         image = self.filter_image(image)
         cv2.imshow("Image", image)
         cv2.waitKey(1)

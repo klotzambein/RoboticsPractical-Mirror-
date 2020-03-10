@@ -9,7 +9,7 @@ mouse_x = 0
 mouse_y = 0
 
 # Set the number of classes 
-NR_OF_CLASSES = 3
+NR_OF_CLASSES = 6
 
 # Size of the input images of our network
 BOUNDING_BOX_IMAGE_SIZE = 32
@@ -40,15 +40,16 @@ def extract_bounding_boxes(hsv_image):
 ## Do your image preprocessing here, such that both your line-tracker and the hsv-calibrator tool can use the same preprocessing function
 ## As preprocessing step, this function should implement a gaussian blur.    <----------------
 def preprocess_image(image):
-    return cv2.GaussianBlur(image, (11, 11), 4)  ## Return the preprocessed image here
+    return cv2.GaussianBlur(image, (11, 11), 10)  ## Return the preprocessed image here
 
 
 ## This function receives the hsv-filtered image
 ## Do your image postprocessing here, by first applying a few erosion steps to remove noise pixels, and then applying a few dilation steps. <------------
 def postprocess_image(image):
-    kernel = np.ones((2,2), np.uint8)
-    erosion = cv2.erode(image, kernel, iterations = 2)
-    dilation = cv2.dilate(erosion, kernel,iterations = 2)
+    kernel1 = np.ones((5,5), np.uint8)
+    kernel2 = np.ones((10,10), np.uint8)
+    erosion = cv2.erode(image, kernel1, iterations = 3)
+    dilation = cv2.dilate(erosion, kernel2, iterations = 4)
     return dilation  ## Return the preprocessed image here
 
 # Need to give the name of dataset to load for annotating
@@ -59,7 +60,7 @@ if len(sys.argv) != 2:
 # Data should be stored in /home/username/data/
 path = os.path.join(os.environ["HOME"], "data")
 dataset = sys.argv[1] 
-data = np.load(os.path.join(path, "{0}.npy".format(dataset)))
+data = np.load(os.path.join(path, "{0}.npy".format(dataset)), allow_pickle=True)
 
 # If data was saved previously, load it so we can append to it
 if os.path.exists(os.path.join(path, "train_classifier.npy") and os.path.join(path, "label_classifier.npy")):
@@ -72,8 +73,10 @@ cv2.setMouseCallback("bounding boxes", on_mouse)
 
 # For each image in the dataset
 for image in data:
-    original_image = image.copy() # Create a copy to keep as the original
-    
+    try:
+        original_image = image.copy() # Create a copy to keep as the original
+    except:
+        continue
     # Use your preprocessing, you might need to create a separate function for it   
     # @TODO
     preprocessed_image = preprocess_image(original_image) 
@@ -153,22 +156,22 @@ for image in data:
         y = (mouse_y // BOUNDING_BOX_IMAGE_SIZE) * BOUNDING_BOX_IMAGE_SIZE + BOUNDING_BOX_IMAGE_SIZE // 2
 
         # You can change the keys used for labeling if you want..
-        if key == ord('1'):
+        if key == ord('a'):
             labeling[(x, y)] = 1
         
-        if key == ord('2'):
+        if key == ord('d'):
             labeling[(x, y)] = 2
         
-        if key == ord('3'):
+        if key == ord('w'):
             labeling[(x, y)] = 3
         
-        if key == ord('4'):
+        if key == ord('s'):
             labeling[(x, y)] = 4
 
-        if key == ord('5'):
+        if key == ord('x'):
             labeling[(x, y)] = 5
 
-        if key == ord('6'):
+        if key == ord('e'):
             labeling[(x, y)] = 6
 
         # Remove the current label
