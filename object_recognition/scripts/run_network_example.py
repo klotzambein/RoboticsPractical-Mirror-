@@ -139,9 +139,10 @@ else:
 
 while True:
     print("wait for message loop")
-    msg = []
+    msg = Image()
     try:
         while True:
-            msg = rospy.wait_for_message("/camera/image", Image, 0.1)
+            msg = rospy.wait_for_message("/camera/image", Image, 0.01)
+            print("got image")
     finally:
         update(msg)
