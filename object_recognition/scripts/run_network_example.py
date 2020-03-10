@@ -142,8 +142,8 @@ while True:
     msg = Image()
     has_msg = False
     try:
-        while True:
-            msg = rospy.wait_for_message("/camera/image", Image, 0.01)
+        for i in range(100):
+            msg = rospy.wait_for_message("/camera/image", Image, 0.1)
             has_msg = True
             print("got image")
     except:
